@@ -1,0 +1,96 @@
+From 5b2d782269a67367b12e9ac61fe53fa61193119a Mon Sep 17 00:00:00 2001
+From: Jhon Aclan <jhonaclan.com>
+Date: Wed, 9 Mar 2022 00:58:36 -0800
+Subject: [PATCH] bonus task
+
+bonus task
+---
+ __pycache__/client3.cpython-310.pyc | Bin 0 -> 1144 bytes
+ client_test.py                      |  31 ++++++++++++++++++++++++++--
+ 2 files changed, 29 insertions(+), 2 deletions(-)
+ create mode 100644 __pycache__/client3.cpython-310.pyc
+
+diff --git a/__pycache__/client3.cpython-310.pyc b/__pycache__/client3.cpython-310.pyc
+new file mode 100644
+index 0000000000000000000000000000000000000000..839e812da0a6482b9ede48fea7b99de0abee21ef
+GIT binary patch
+literal 1144
+zcmYjQOK%%D5GJ`?Y1fugHGWA=4{U)X7Es42atVYy+SqA<0(G4jIb@+=u@Xo2#w)E%
+zQU$EYC-oon56H*<o1S^?Dd+aoUOJ>~BV5djJ3IX5<7`>4uMk|n!*=h#n2^6*@ae)m
+z@*Rr)6O|;A79^qGvV?gXB!Ra);gThx43diEGW?AsRauc$v=PKII%P`23amn9PUm!=
+zynCM1AXwCazQ48j48lbN_<~=OOL|EcpF5k}j!90EHMou0&14;_us)|<o@^wW$yU;Y
+zCal5669O$6!v<`^7BmNZlgue4XHRi=1tM6Jt1W`M)*^Fu_3oaeN7%^`Y1cnuSL9&&
+z)rm3V&hBne_Os%o)TZ<J;p2z9XA@B8&vW_o!$tlNC8UpXvqJPZ${vb-fhs05tlA<M
+z)Hsi|hz#&ldcl0mZ{lFaX2BMb;T>|pXVgVAKH!L_GVO>%Rmw>pL{=1{90+p)Vgw*T
+zieIy00$P|-9K#4yW-v*}%w*#-9~ogoZOZ<st(tP2_Ht>%vC8|fj5B@uks-)7wc(&B
+zGt&-jcs3~wD7S56{2*QC$C$fxmFw>hqE^xTyW8({-)K;}`->@HqPssG{=BzipntMs
+z@Qa;qcgE+By8R-Dk$LoBd~R#UVD=H+p+|=$bPW|_5pCd8!$;L|qwmhYUe0&oNo}GN
+zJ6frvI6jeNM@a09-XTa;F#THm2u2_cdFhDq;L}WGBYEZbgmM>l;PJPatzM;EJ3aqm
+zsT?#LA>!ArUK=CrehkJKjVMRVs^K%zbeQF%G@agm<;aubt`?aQ+elyMuKq?K6W;ox
+z&}&a4UlH?c@coND8|=UQq5Va2YodxG?>$g}L#B<bEMv<}J_O6(>vCi(3VSJsN%-o`
+z%hzu$J@9<p02yUNNK?ymyh9se?lD-J+7NG7YFoXoT*b=e7_i)+RKv_zt{{`P;xAt(
+z6^~S_2;1|cpxiI7T=V|={S=MNCses<P)oj^3~^Qqc;;x<+o+=T2>C+B0v<#xildcA
+SASh!T_Zldh^h?J7=E47V{T$x_
+
+literal 0
+HcmV?d00001
+
+diff --git a/client_test.py b/client_test.py
+index af2bf26..b92f853 100644
+--- a/client_test.py
++++ b/client_test.py
+@@ -1,5 +1,5 @@
+ import unittest
+-from client3 import getDataPoint
++from client3 import getDataPoint, getRatio
+ 
+ class ClientTest(unittest.TestCase):
+   def test_getDataPoint_calculatePrice(self):
+@@ -8,6 +8,8 @@ class ClientTest(unittest.TestCase):
+       {'top_ask': {'price': 121.68, 'size': 4}, 'timestamp': '2019-02-11 22:06:30.572453', 'top_bid': {'price': 117.87, 'size': 81}, 'id': '0.109974697771', 'stock': 'DEF'}
+     ]
+     """ ------------ Add the assertion below ------------ """
++    for quote in quotes:
++      self.assertEqual(getDataPoint(quote), (quote['stock'], quote['top_bid']['price'], quote['top_ask']['price'], (quote['top_bid']['price'] + quote['top_ask']['price'])/2))
+ 
+   def test_getDataPoint_calculatePriceBidGreaterThanAsk(self):
+     quotes = [
+@@ -15,9 +17,34 @@ class ClientTest(unittest.TestCase):
+       {'top_ask': {'price': 121.68, 'size': 4}, 'timestamp': '2019-02-11 22:06:30.572453', 'top_bid': {'price': 117.87, 'size': 81}, 'id': '0.109974697771', 'stock': 'DEF'}
+     ]
+     """ ------------ Add the assertion below ------------ """
+-
++     for quote in quotes:
++      self.assertEqual(getDataPoint(quote), (quote['stock'], quote['top_bid']['price'], quote['top_ask']['price'], (quote['top_bid']['price'] + quote['top_ask']['price'])/2))
+ 
+   """ ------------ Add more unit tests ------------ """
++  def test_getRatio_priceBZero(self):
++    price_a = 119.2
++    price_b = 0
++    self.assertIsNone(getRatio(price_a, price_b))
++     
++  def test_getRatio_priceAZero(self):
++    price_a = 0
++    price_b = 121.68
++    self.assertEqual(getRatio(price_a, price_b), 0)
++  
++  def test_getRatio_greaterThan1(self):
++    price_a = 346.48
++    price_b = 166.39
++    self.assertGreater(getRatio(price_a, price_b), 1)
++
++  def test_getRatio_LessThan1(self):
++    price_a = 166.39
++    price_b = 356.48
++    self.assertLess(getRatio(price_a, price_b), 1)
++
++  def test_getRatio_exactlyOne(self):
++    price_a = 356.48
++    price_b = 356.48
++    self.assertEqual(getRatio(price_a, price_b), 1)
+ 
+ 
+ 
+-- 
+2.35.1.windows.2
+
